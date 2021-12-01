@@ -1,11 +1,8 @@
 library(data.table)
 
-dt_dat <- fread(".data/day1.dat", col.names = "measurements")
-
 # --- Part 1 ----
 
-## first line is first measurement
-## Shift (type lag) is the previous row's measurement
+dt_dat <- fread("./data/day1.dat", col.names = "measurements")
 dt_dat[
     ,
     up := ifelse(
@@ -16,10 +13,12 @@ dt_dat[
 ]
 dt_dat[, sum(up, na.rm = TRUE)]
 
+
 # --- Part Two ---
 
-# use Reduce for rolling sum
+dt_dat <- fread("./data/day1.dat", col.names = "measurements")
 
+# use Reduce for rolling sum
 dt_dat[, sum3 := Reduce(`+`, shift(measurements, 0:2))]
 
 dt_dat[
@@ -32,4 +31,3 @@ dt_dat[
 ]
 
 dt_dat[, sum(up, na.rm = TRUE)]
-
