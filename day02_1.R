@@ -8,27 +8,23 @@ dt_inp <- fread("./data/day02.dat",
     sep = " "
 )
 
-dt_inp[, id := .I]
-dt_res <- dcast(dt_inp, id ~ direction, value.var = "units", fun.aggregate = sum)
-
+dt_res <- dcast(dt_inp, . ~ direction, value.var = "units", fun.aggregate = sum)
 
 ## ans
-dt_res[, (sum(down) - sum(up)) * sum(forward)]
+dt_res[, (down - up) * forward]
 
 #---- Part 2 -----#
+
+dt_inp[, id := .I]
+dt_res <- dcast(dt_inp, id ~ direction, value.var = "units", fun.aggregate = sum)
 
 # change in aim this step
 dt_res[, this_aim := down - up]
 
 # cumluative aim 
-dt_res[, tot_aim := Reduce("+", shift(this_aim, n = 1L, type = "lag"))]
+dt_res[, aim := cumsum(this_aim)]
 
-dt_res[, adj_depth := down - up + aim * forward]
-
-## horiz 
-dt_res[,sum(forward)]
-# vert
-dt_res[, sum(adj_depth)]
+dt_res[, adj_depth := aim * forward]
 
 ## result 
-dt_res[, sum(forward) + sum(adj_depth)]
+dt_res[, sum(forward) * sum(adj_depth)]
